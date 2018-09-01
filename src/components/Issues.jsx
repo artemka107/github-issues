@@ -3,7 +3,7 @@ import NavTabs from './NavTabs';
 import PageTitle from './PageTitle';
 import IssuesStates from './IssuesStates';
 import IssueItem from './IssueItem';
-import SubNav from './SubNav';
+import FilterForm from './FilterForm';
 
 const Issues = (props) => {
   const {
@@ -13,18 +13,30 @@ const Issues = (props) => {
     amountIssues,
     addIssue,
     closeIssue,
+    setFilterIssuesPattern,
+    filterIssuesPattern,
   } = props;
 
-  const renderIssues = issues => (
-    <ul className="issues">
-      {issues.map(issue => (
-        <IssueItem
-          key={issue.id}
-          issue={issue}
-          closeIssue={closeIssue}
-        />
-      )) }
-    </ul>);
+  const renderIssues = (currentState) => {
+    const currentIssues = currentState === 'open' ? openedIssues : closedIssues;
+    const isMatchesSearchPattern = searchPattern => ({ title }) => {
+      const pattern = new RegExp(searchPattern, 'i');
+      return title.match(pattern);
+    };
+    return (
+      <ul className="issues">
+        {currentIssues
+          .filter(isMatchesSearchPattern(filterIssuesPattern))
+          .map(issue => (
+            <IssueItem
+              key={issue.id}
+              issue={issue}
+              closeIssue={closeIssue}
+            />
+          )) }
+      </ul>
+    );
+  };
 
 
   return (
@@ -40,13 +52,18 @@ const Issues = (props) => {
       <div className="container">
         <div className="issues-listing">
           <div className="issues-listing__subnav">
-            <SubNav addIssue={addIssue} />
+            <FilterForm setFilterIssuesPattern={setFilterIssuesPattern} />
+            <div className="subnav">
+              <button onClick={addIssue} className="btn btn-primary" type="button">
+                New issue
+              </button>
+            </div>
           </div>
           <div className="issues-listing__header">
             <IssuesStates props={props} />
           </div>
           <div className="issues-listing__body">
-            {renderIssues(activeState === 'open' ? openedIssues : closedIssues)}
+            {renderIssues(activeState)}
           </div>
         </div>
       </div>

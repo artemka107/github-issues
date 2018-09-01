@@ -10,6 +10,7 @@ import './index.css';
 /* eslint-disable no-underscore-dangle */
 const initState = {
   issues: dataToApp,
+  filterIssuesPattern: '',
   uiIssues: {
     activeState: 'open',
   },

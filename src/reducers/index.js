@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux';
 import { handleActions } from 'redux-actions';
+import { reducer as form } from 'redux-form';
 import * as actions from '../actions';
 
 const issues = handleActions({
@@ -11,6 +12,12 @@ const issues = handleActions({
   },
 }, {});
 
+const filterIssuesPattern = handleActions({
+  [actions.setFilterIssuesPattern](state, { payload: { pattern } }) {
+    return pattern || '';
+  },
+}, '');
+
 const uiIssues = handleActions({
   [actions.changeActiveState](state, { payload: { activeState } }) {
     return { activeState };
@@ -18,6 +25,8 @@ const uiIssues = handleActions({
 }, {});
 
 export default combineReducers({
+  filterIssuesPattern,
   issues,
   uiIssues,
+  form,
 });
